@@ -132,6 +132,10 @@ onMounted(async () => {
 function hoyISO() {
   return new Date().toISOString().split("T")[0];
 }
+import { useToast } from "vue-toastification";
+const toast = useToast();
+
+
 const form = reactive({
   solicitanteNombre: "",
   solicitanteDni: "",
@@ -181,7 +185,7 @@ async function generar() {
 
   await window.electron.guardarNumero(siguiente)
 
-  alert(`PDF generado:\n${filePath}`)
+  toast.success(`PDF generado:\n${filePath}`)
 }
 </script>
 

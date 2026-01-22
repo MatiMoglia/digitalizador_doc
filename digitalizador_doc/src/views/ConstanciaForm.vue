@@ -49,7 +49,8 @@
 
 <script setup>
 import { reactive, toRaw } from "vue";
-
+import { useToast } from "vue-toastification";
+const toast = useToast();
 function hoyISO() {
   return new Date().toISOString().split("T")[0];
 }
@@ -64,7 +65,7 @@ const form = reactive({
 async function generar() {
   const data = toRaw(form);
   const filePath = await window.electron.generarConstancia(data);
-  alert(`PDF generado:\n${filePath}`);
+  toast.success(`PDF generado:\n${filePath}`);
 }
 </script>
 <style scoped>

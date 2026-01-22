@@ -79,7 +79,8 @@
 
 <script setup>
 import { reactive, toRaw } from "vue";
-
+import { useToast } from "vue-toastification";
+const toast = useToast();
 const form = reactive({
   nombre: "",
   edad: "",
@@ -95,7 +96,7 @@ const form = reactive({
 async function generar() {
   const data = toRaw(form);
   const filePath = await window.electron.generarNotaDiarioPDF(data);
-  alert(`PDF generado:\n${filePath}`);
+  toast.success(`PDF generado:\n${filePath}`);
 }
 </script>
 
