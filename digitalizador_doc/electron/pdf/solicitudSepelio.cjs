@@ -67,13 +67,19 @@ async function generarSolicitudSepelio(data) {
     servicioTextoFinal = `A CARGO MUTUAL${nombreMutual}`;
   }
 
+  let observacionesConcatenadas = "";
   if (data.ataudTipo) {
-    servicioTextoFinal += ` - ATAUD: ${data.ataudTipo}`;
+    observacionesConcatenadas = ` ${data.ataudTipo}`;
+  }
+  if (data.observacion) {
+    observacionesConcatenadas += observacionesConcatenadas
+      ? ` - ${data.observacion}`
+      : data.observacion;
   }
 
   const docDefinition = {
     pageSize: "A4",
-    pageMargins: [50, 40, 50, 40],
+    pageMargins: [40, 40, 40, 40],
     defaultStyle: {
       font: "Times",
       fontSize: 11,
@@ -84,7 +90,7 @@ async function generarSolicitudSepelio(data) {
         columns: [
           {
             image: logoPath,
-            width: 40,
+            width: 35,
           },
           {
             stack: [
@@ -99,16 +105,16 @@ async function generarSolicitudSepelio(data) {
             ],
             alignment: "center",
             width: "*",
-            margin: [-50, 0, 0, 0],
+            margin: [-40, 0, 0, 0],
           },
         ],
         margin: [0, 0, 0, 1],
       },
       {
         canvas: [
-          { type: "line", x1: 0, y1: 5, x2: 495, y2: 5, lineWidth: 0.5 },
+          { type: "line", x1: 0, y1: 5, x2: 515, y2: 5, lineWidth: 0.5 },
         ],
-        margin: [0, 0, 0, 20],
+        margin: [0, 0, 0, 15],
       },
       {
         columns: [
@@ -119,10 +125,10 @@ async function generarSolicitudSepelio(data) {
           },
           {
             text: [
-              { text: "Nº  ", fontSize: 12 },
+              { text: "Nº  ", fontSize: 11 },
               {
                 text: String(data.numeroDocumento || ""),
-                fontSize: 14,
+                fontSize: 13,
                 bold: true,
               },
             ],
@@ -130,7 +136,7 @@ async function generarSolicitudSepelio(data) {
             alignment: "right",
           },
         ],
-        margin: [0, 0, 0, 10],
+        margin: [0, 0, 0, 5],
       },
       { text: "SOLICITANTE DEUDOR RESPONSABLE", style: "sectionHeader" },
       {
@@ -171,16 +177,16 @@ async function generarSolicitudSepelio(data) {
       },
       {
         table: {
-          widths: [300, "*"],
+          widths: ["auto", "*"],
           body: [
             [
               labelCell("Servicio convenido para el/la extinto/a:"),
               dataCell(data.nombreFallecido),
             ],
           ],
+          layout: "noBorders",
+          margin: [0, 0, 0, 5],
         },
-        layout: "noBorders",
-        margin: [0, 0, 0, 5],
       },
       {
         table: {
@@ -205,7 +211,7 @@ async function generarSolicitudSepelio(data) {
           ],
         },
         layout: "noBorders",
-        margin: [0, 0, 0, 20],
+        margin: [0, 0, 0, 10],
       },
 
       { text: "TIPOS DE SERVICIOS DISPONIBLES", style: "sectionHeader" },
@@ -224,7 +230,7 @@ async function generarSolicitudSepelio(data) {
           { text: "• A cargo Mutual con Ataúd.", style: "listText" },
           { text: "• Otros.", style: "listText" },
         ],
-        margin: [10, 5, 0, 15],
+        margin: [10, 5, 0, 10],
       },
 
       {
@@ -237,7 +243,7 @@ async function generarSolicitudSepelio(data) {
                   {
                     text: "SERVICIO SELECCIONADO: ",
                     bold: true,
-                    fontSize: 10,
+                    fontSize: 13,
                     color: "#555555",
                   },
                   {
@@ -254,17 +260,25 @@ async function generarSolicitudSepelio(data) {
           ],
         },
         layout: "noBorders",
-        margin: [0, 10, 0, 20],
+        margin: [0, 10, 0, 10],
       },
 
-      {
-        table: {
-          widths: [90, "*"],
-          body: [[labelCell("Observaciones:"), dataCell(data.observacion)]],
-        },
-        layout: "noBorders",
-        margin: [0, 0, 0, 15],
-      },
+      observacionesConcatenadas
+        ? {
+            table: {
+              widths: [90, "*"],
+              body: [
+                [
+                  labelCell("Observaciones:"),
+                  dataCell(observacionesConcatenadas),
+                ],
+              ],
+            },
+            layout: "noBorders",
+            margin: [0, 0, 0, 15],
+          }
+        : null,
+
       {
         text: [
           {
@@ -277,7 +291,7 @@ async function generarSolicitudSepelio(data) {
             fontSize: 13,
           },
         ],
-        margin: [0, 0, 0, 20],
+        margin: [0, 0, 0, 15],
       },
       {
         text: "En prueba de conformidad, firmamos el presente y nos obligamos mancomunada y solidariamente a pagar el total anterior según las condiciones pactadas con la administración de la Cooperativa.",
@@ -286,7 +300,7 @@ async function generarSolicitudSepelio(data) {
       {
         text: "La falta de cumplimiento en el pago de las obligaciones convenidas devengará el interés por mora vigente, reservándose la Cooperativa el derecho de trasladar los antecedentes a ASESORÍA JURÍDICA para la gestión de cobro.-",
         style: "legalText",
-        margin: [0, 5, 0, 30],
+        margin: [0, 5, 0, 20],
       },
       {
         text: [
@@ -294,11 +308,11 @@ async function generarSolicitudSepelio(data) {
           { text: fechaLarga(data.fechaDocumento) },
         ],
         alignment: "right",
-        margin: [0, 0, 0, 65],
+        margin: [0, 0, 0, 60],
       },
       {
         table: {
-          widths: ["*", "*"],
+          widths: ["*", "*", "*"],
           body: [
             [
               {
@@ -309,7 +323,7 @@ async function generarSolicitudSepelio(data) {
                         type: "line",
                         x1: 0,
                         y1: 0,
-                        x2: 170,
+                        x2: 130,
                         y2: 0,
                         lineWidth: 0.5,
                       },
@@ -330,7 +344,7 @@ async function generarSolicitudSepelio(data) {
                         type: "line",
                         x1: 0,
                         y1: 0,
-                        x2: 170,
+                        x2: 130,
                         y2: 0,
                         lineWidth: 0.5,
                       },
@@ -340,6 +354,23 @@ async function generarSolicitudSepelio(data) {
                   {
                     text: "Por Cooperativa de Servicios Públicos\nde Porteña Ltda.",
                     style: "signatureText",
+                  },
+                ],
+              },
+              {
+                stack: [
+                  {
+                    canvas: [
+                      {
+                        type: "line",
+                        x1: 0,
+                        y1: 0,
+                        x2: 130,
+                        y2: 0,
+                        lineWidth: 0.5,
+                      },
+                    ],
+                    alignment: "center",
                   },
                 ],
               },
@@ -362,10 +393,10 @@ async function generarSolicitudSepelio(data) {
       },
       label: { fontSize: 11, bold: true },
       inputText: { fontSize: 12, bold: false },
-      listText: { fontSize: 12, margin: [0, 1, 0, 1], color: "#444444" },
-      legalText: { fontSize: 11, alignment: "justify", lineHeight: 1.3 },
+      listText: { fontSize: 11, margin: [0, 1, 0, 1], color: "#444444" },
+      legalText: { fontSize: 10, alignment: "justify", lineHeight: 1.3 },
       signatureText: {
-        fontSize: 10,
+        fontSize: 9,
         bold: true,
         margin: [0, 8, 0, 0],
         alignment: "center",

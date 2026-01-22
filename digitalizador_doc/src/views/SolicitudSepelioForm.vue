@@ -45,7 +45,7 @@
 
         <div>
           <label>Casa mortuoria</label>
-          <input v-model="form.casaMortuoria" />
+          <input class="input-blocked" readonly v-model="form.casaMortuoria" placeholder="Cooperativa de Servicios Públicos de Porteña" />
         </div>
 
         <div>
@@ -126,14 +126,16 @@
 
 <script setup>
 import { reactive, computed, watch, toRaw, onMounted } from "vue";
+import { useToast } from "vue-toastification";
+const toast = useToast();
+
 onMounted(async () => {
-  form.numeroDocumento = await window.electron.obtenerNumero()
+  const numero = Number(await window.electron.obtenerNumero())
+  form.numeroDocumento = numero
 })
 function hoyISO() {
   return new Date().toISOString().split("T")[0];
 }
-import { useToast } from "vue-toastification";
-const toast = useToast();
 
 
 const form = reactive({
@@ -142,7 +144,7 @@ const form = reactive({
   domicilio: "",
   domicilioLOC: "",
   nombreFallecido: "",
-  casaMortuoria: "",
+  casaMortuoria: "Cooperativa de Servicios Públicos de Porteña",
   fechaSepelio: "",
   horaSepelio: "",
   cementerio: "",
@@ -151,7 +153,7 @@ const form = reactive({
   nombreMutual: "",
   ataudTipo: "",
   observacion: "",
-  numeroDocumento: 2737,
+  numeroDocumento: 0,
   fechaDocumento: hoyISO(),
 });
 const esServicioConAtaud = computed(() => {
@@ -171,21 +173,37 @@ watch(
   },
 );
 async function generar() {
-  const numeroActual = form.numeroDocumento
+  const numeroActual = Number(form.numeroDocumento)
 
-  const data = {
-    ...toRaw(form),
-    numeroDocumento: numeroActual
+  try {
+    const data = {
+      ...toRaw(form),
+      numeroDocumento: numeroActual
+    }
+
+    const filePath = await window.electron.generarSolicitudSepelio(data)
+
+    const siguiente = numeroActual + 1
+    await window.electron.guardarNumero(siguiente)
+
+    form.numeroDocumento = siguiente
+
+    toast.success(`PDF generado:\n${filePath}`)
+
+    Object.assign(form, {
+      solicitanteNombre: "",
+      solicitanteDni: "",
+      domicilio: "",
+      nombreFallecido: "",
+      fechaSepelio: "",
+      horaSepelio: "",
+      tipoServicio: "",
+      monto: "",
+    })
+  } catch (err) {
+    console.error(err)
+    toast.error("Error al generar el PDF. No se incrementó el número.")
   }
-
-  const filePath = await window.electron.generarSolicitudSepelio(data)
-
-  const siguiente = Number(numeroActual) + 1
-  form.numeroDocumento = siguiente
-
-  await window.electron.guardarNumero(siguiente)
-
-  toast.success(`PDF generado:\n${filePath}`)
 }
 </script>
 
@@ -195,7 +213,11 @@ async function generar() {
   margin: 20px auto;
   padding: 0 15px;
 }
-
+.input-blocked {
+  background-color: #f3f4f6; 
+  cursor: not-allowed;
+  color: #6b7280;
+}
 .card {
   background: #ffffff;
   border-radius: 12px;

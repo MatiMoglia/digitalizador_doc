@@ -15,7 +15,8 @@ function leerNumero() {
 }
 
 function guardarNumero(numero) {
-  fs.writeFileSync(filePath, JSON.stringify({ numero }))
+  fs.writeFileSync(filePath, JSON.stringify({ numero }, null, 2))
+  return numero
 }
 
 module.exports = { leerNumero, guardarNumero }

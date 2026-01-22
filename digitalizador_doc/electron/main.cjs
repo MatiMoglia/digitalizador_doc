@@ -26,30 +26,47 @@ function createWindow() {
   }
 }
 
-ipcMain.handle("generar-constancia", async (_, data) => {
-  const filePath = await generarConstanciaPDF(data);
-  shell.openPath(filePath);
+ipcMain.handle("generar-constancia", async (event, data) => {
+  try {
+    const filePath = await generarConstanciaPDF(data);
 
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (win) {
-    win.show();
-    win.focus();
+    const openError = await shell.openPath(filePath);
+    if (openError) {
+      console.warn("No se pudo abrir el PDF:", openError);
+    }
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) {
+      win.show();
+      win.focus();
+    }
+
+    return filePath;
+  } catch (err) {
+    console.error("Error generando constancia PDF:", err);
+    throw err; 
   }
-
-  return filePath;
 });
 
-ipcMain.handle("generar-solicitud-sepelio", async (_, data) => {
-  const filePath = await generarSolicitudSepelio(data);
-  shell.openPath(filePath);
+ipcMain.handle("generar-solicitud-sepelio", async (event, data) => {
+  try {
+    const filePath = await generarSolicitudSepelio(data);
 
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (win) {
-    win.show();
-    win.focus();
+    const openError = await shell.openPath(filePath);
+    if (openError) {
+      console.warn("No se pudo abrir el PDF:", openError);
+    }
+
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) {
+      win.show();
+      win.focus();
+    }
+
+    return filePath;
+  } catch (err) {
+    console.error("Error generando solicitud sepelio:", err);
+    throw err;
   }
-
-  return filePath;
 });
 
 ipcMain.handle("generar-nota-diario", async (_, data) => {
@@ -61,11 +78,13 @@ ipcMain.handle("generar-nota-diario", async (_, data) => {
     win.show();
     win.focus();
   }
-  
+
   return filePath;
 });
 
 ipcMain.handle("obtener-numero", () => leerNumero());
-ipcMain.handle("guardar-numero", (_, numero) => guardarNumero(numero));
+ipcMain.handle("guardar-numero", (_, numero) => {
+  return guardarNumero(numero);
+});
 
 app.whenReady().then(createWindow);
