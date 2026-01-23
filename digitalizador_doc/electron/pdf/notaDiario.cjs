@@ -2,6 +2,7 @@ const { app } = require("electron");
 const PdfPrinter = require("pdfmake/src/printer");
 const fs = require("fs");
 const path = require("path");
+const { fontSize } = require("pdfkit");
 
 const fonts = {
   Times: {
@@ -117,23 +118,42 @@ async function generarNotaDiarioPDF(data) {
       filaDato("PADRES:", data.padres),
       lineaPuntos(475),
 
-      filaDato("ESPOSA/O:", data.esposa),
+      filaDato("ESPOSO/A", data.esposa),
       lineaPuntos(475),
 
       filaDato("HIJOS:", data.hijos),
       lineaPuntos(475),
-
-      filaDato("OTROS FAMILIARES:", data.otros),
+      filaDato("HIJOS POLITICOS:", data.hijosPoliticos),
       lineaPuntos(475),
-
-      {
-        text: "OFICIO RELIGIOSO: Parroquia San Isidro Labrador.",
-        bold: true,
-        margin: [0, 30, 0, 5],
-        fontSize: 13,
+      filaDato("HERMANOS/AS:", data.hermanos),
+      lineaPuntos(475),
+      filaDato("HERMANOS/AS POLITICOS:", data.hermanosPoliticos),
+      lineaPuntos(475),
+      filaDato("NIETOS:", data.nietos),
+      lineaPuntos(475),
+      filaDato("NIETOS POLITICOS:", data.nietosPoliticos),
+      lineaPuntos(475),
+     {
+        stack: [
+          { text: "SOBRINOS PRIMOS Y DEMAS DEUDOS:", bold: true, fontSize: 13 },
+          { 
+            text: (data.otros || "").toUpperCase(), 
+            margin: [0, 5, 0, 0],
+            fontSize: 13
+          }
+        ],
+        margin: [0, 7, 0, 0]
       },
 
-      filaDato("CEMENTERIO:", data.cementerio),
+      {
+        text: "OFICIO RELIGIOSO: " + data.oficioReligioso ,
+        margin: [0, 40, 0, 5],
+        fontSize: 13,
+      },
+      {
+        text: "CEMENTERIO: " + data.cementerio,
+        fontSize: 13,
+      },
     ],
   };
 
@@ -144,7 +164,6 @@ async function generarNotaDiarioPDF(data) {
   return filePath;
 }
 
-// Función auxiliar de línea ajustada al margen
 function lineaPuntos(ancho) {
   return {
     canvas: [

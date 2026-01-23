@@ -69,17 +69,26 @@ ipcMain.handle("generar-solicitud-sepelio", async (event, data) => {
   }
 });
 
-ipcMain.handle("generar-nota-diario", async (_, data) => {
-  const filePath = await generarNotaDiarioPDF(data);
-  shell.openPath(filePath);
+ipcMain.handle("generar-nota-diario", async (event, data) => {
+  try {
+    const filePath = await generarNotaDiarioPDF(data);
 
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (win) {
-    win.show();
-    win.focus();
+    const openError = await shell.openPath(filePath);
+    if (openError) {
+      console.warn("No se pudo abrir el PDF:", openError);
+    }
+
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) {
+      win.show();
+      win.focus();
+    }
+
+    return filePath;
+  } catch (err) {
+    console.error("Error generando nota diario:", err);
+    throw err;
   }
-
-  return filePath;
 });
 
 ipcMain.handle("obtener-numero", () => leerNumero());

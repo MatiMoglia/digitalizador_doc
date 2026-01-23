@@ -9,13 +9,13 @@
 
       <div class="form-grid">
         <div>
-          <label>Nombre</label>
+          <label>Nombre del fallecido</label>
           <input v-model="form.nombre" />
         </div>
 
         <div>
           <label>Edad</label>
-          <input v-model="form.edad" />
+          <input v-model="form.edad" type="number" />
         </div>
 
         <div>
@@ -34,17 +34,37 @@
         </div>
 
         <div class="full">
-          <label>Esposa / Esposo</label>
+          <label>Esposa/o</label>
           <input v-model="form.esposa" />
         </div>
 
         <div class="full">
           <label>Hijos</label>
-          <textarea rows="2" v-model="form.hijos"></textarea>
+          <textarea rows="1" v-model="form.hijos"></textarea>
+        </div>
+        <div class="full">
+          <label>Hijos Politicos</label>
+          <input v-model="form.hijosPoliticos" />
+        </div>
+        <div class="full">
+          <label>Hermanos/as</label>
+          <input v-model="form.hermanos" />
         </div>
 
         <div class="full">
-          <label>Otros familiares</label>
+          <label>Hermanos/as Politicos</label>
+          <input v-model="form.hermanosPoliticos" />
+        </div>
+        <div class="full">
+          <label>Nietos</label>
+          <input v-model="form.nietos" />
+        </div>
+        <div class="full">
+          <label>Nietos Politicos</label>
+          <input v-model="form.nietosPoliticos" />
+        </div>
+        <div class="full">
+          <label>Sobrinos, Primos y demas Deudos:</label>
           <textarea rows="2" v-model="form.otros"></textarea>
         </div>
 
@@ -57,8 +77,11 @@
           <label>Hora de sepelio</label>
           <input type="time" v-model="form.horaSepelio" />
         </div>
-
-        <div class="full">
+        <div>
+          <label>Oficicio Religioso</label>
+          <input v-model="form.oficioReligioso" />
+        </div>
+        <div>
           <label>Cementerio</label>
           <input v-model="form.cementerio" />
         </div>
@@ -68,35 +91,70 @@
         <button class="btn-secondary" @click="$router.push('/')">
           Volver al menú
         </button>
-        <button class="btn-primary" @click="generar">
-          Generar aviso
-        </button>
+        <button class="btn-primary" @click="generar">Generar aviso</button>
       </div>
     </div>
   </div>
 </template>
 
-
 <script setup>
 import { reactive, toRaw } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
+
 const form = reactive({
   nombre: "",
   edad: "",
   fechaFallecimiento: "",
   horaFallecimiento: "",
   padres: "",
+  esposa: "",
   hijos: "",
+  hijosPoliticos: "",
+  hermanos: "",
+  hermanosPoliticos: "",
+  nietos: "",
+  nietosPoliticos: "",
   otros: "",
   fechaSepelio: "",
   horaSepelio: "",
+  oficioReligioso: "",
   cementerio: "",
 });
+
 async function generar() {
-  const data = toRaw(form);
-  const filePath = await window.electron.generarNotaDiarioPDF(data);
-  toast.success(`PDF generado:\n${filePath}`);
+  try {
+    const data = {
+      ...toRaw(form),
+    };
+
+    const filePath = await window.electron.generarNotaDiarioPDF(data);
+
+    toast.success(`PDF generado:\n${filePath}`);
+
+    Object.assign(form, {
+      nombre: "",
+      edad: "",
+      fechaFallecimiento: "",
+      horaFallecimiento: "",
+      padres: "",
+      esposa: "",
+      hijos: "",
+      hijosPoliticos: "",
+      hermanos: "",
+      hermanosPoliticos: "",
+      nietos: "",
+      nietosPoliticos: "",
+      otros: "",
+      fechaSepelio: "",
+      horaSepelio: "",
+      oficioReligioso: "",
+      cementerio: "",
+    });
+  } catch (err) {
+    console.error(err);
+    toast.error("Error al generar el PDF.");
+  }
 }
 </script>
 
@@ -203,5 +261,4 @@ textarea:focus {
 .btn-secondary:hover {
   background: #e5e7eb;
 }
-
 </style>
