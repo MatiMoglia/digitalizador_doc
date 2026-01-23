@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Builds Electron
+release/
+dist/
+win-unpacked/
+
+# Ejecutables
+*.exe
+*.zip
+*.asar
