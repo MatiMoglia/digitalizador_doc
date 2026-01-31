@@ -21,28 +21,32 @@
         <h2>Nota para Diarios</h2>
         <p>Aviso fúnebre para publicación.</p>
       </div>
+      <div class="card" @click="goTo('traslado')">
+        <i class="bi bi-car-front-fill card-icon"></i>
+        <h2>Solicitud de Sepelio (Traslado)</h2>
+        <p>Nota correspondiente para Administracion.</p>
+      </div>
     </div>
   </div>
 </template>
 
-
 <script setup>
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 function goTo(tipo) {
   const routes = {
-    constancia: '/constancia/nuevo',
-    solicitud: '/solicitud/nuevo',
-    aviso: '/nota/nuevo'
-  }
+    constancia: "/constancia/nuevo",
+    solicitud: "/solicitud/nuevo",
+    aviso: "/nota/nuevo",
+    traslado: "/traslado/nuevo"
+  };
 
-  router.push(routes[tipo])
+  router.push(routes[tipo]);
 }
 </script>
 
 <style scoped>
-
 .home-container {
   min-height: 100vh;
   padding: 40px;
@@ -66,7 +70,7 @@ function goTo(tipo) {
 
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
   gap: 24px;
   width: 100%;
   max-width: 900px;

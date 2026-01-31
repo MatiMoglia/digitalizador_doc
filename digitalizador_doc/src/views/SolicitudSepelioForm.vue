@@ -10,7 +10,7 @@
         </div>
         <div class="doc-fecha">
           <label>Fecha</label>
-          <input type="date" v-model="form.fechaDocumento" />
+          <input type="date" v-model="form.fechaDocumento" placeholder="DD/MM/YYYY"/>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
 
         <div>
           <label>Fecha sepelio</label>
-          <input type="date" v-model="form.fechaSepelio" />
+          <input type="date" v-model="form.fechaSepelio" placeholder="DD/MM/YYYY" />
         </div>
 
         <div>
