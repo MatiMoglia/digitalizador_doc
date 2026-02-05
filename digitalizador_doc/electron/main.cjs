@@ -7,6 +7,8 @@ const { generarNotaDiarioPDF } = require("./pdf/notaDiario.cjs");
 const { leerNumero, guardarNumero } = require("./store/contador.cjs");
 const { generarSolicitudTrasladoPDF } = require("./pdf/sepelioTraslado.cjs");
 const { leerNumeroTraslado, guardarNumeroTraslado } = require("./store/contadorTraslados.cjs");
+const { generarDeclaracion } = require('./pdf/declaracionJur.cjs')
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
@@ -47,7 +49,26 @@ ipcMain.handle("generar-constancia", async (event, data) => {
     throw err;
   }
 });
+ipcMain.handle("generar-declaracion", async (event, data) => {
+  try {
+    const filePath = await generarDeclaracion(data);
 
+    const openError = await shell.openPath(filePath);
+    if (openError) {
+      console.warn("No se pudo abrir el PDF:", openError);
+    }
+    const win = BrowserWindow.fromWebContents(event.sender);
+    if (win) {
+      win.show();
+      win.focus();
+    }
+
+    return filePath;
+  } catch (err) {
+    console.error("Error generando declaracion PDF:", err);
+    throw err;
+  }
+});
 ipcMain.handle("generar-solicitud-traslado", async (event, data) => {
   try {
     const filePath = await generarSolicitudTrasladoPDF(data);

@@ -13,4 +13,6 @@ contextBridge.exposeInMainWorld("electron", {
   obtenerNumeroTraslado: () => ipcRenderer.invoke("obtener-numero-traslado"),
   guardarNumeroTraslado: (numero) =>
     ipcRenderer.invoke("guardar-numero-traslado", numero),
+    generarDeclaracion: (data) => ipcRenderer.invoke("generar-declaracion", data),
 });
+

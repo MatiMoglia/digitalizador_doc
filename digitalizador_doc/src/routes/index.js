@@ -4,6 +4,8 @@ import ConstanciaForm from '../views/constanciaForm.vue'
 import NotaDiarios from '../views/NotaDiarios.vue'
 import SolicitudSepelioForm from '../views/SolicitudSepelioForm.vue'
 import SolicitudTraslado from '../views/SolicitudTraslado.vue'
+import DeclaracionJurada from '../views/DeclaracionJurada.vue'
+
 const routes = [
   {
     path: '/',
@@ -29,6 +31,11 @@ const routes = [
     path: '/traslado/nuevo',
     name: 'traslado',
     component: SolicitudTraslado
+  },
+  {
+    path: '/declaracion/nuevo',
+    name: 'declaracion',
+    component: DeclaracionJurada
   }
   
 ]
