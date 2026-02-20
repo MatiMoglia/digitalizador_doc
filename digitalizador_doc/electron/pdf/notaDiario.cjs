@@ -25,12 +25,9 @@ function downloadsDir() {
 
 function formatearFecha(fecha) {
   if (!fecha) return "";
-  const f = new Date(fecha);
-  return f.toLocaleDateString("es-AR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+
+  const [year, month, day] = fecha.split("-");
+  return `${day}/${month}/${year}`;
 }
 
 function filaDato(label, value, extraLabel = "", extraValue = "") {
@@ -94,7 +91,7 @@ async function generarNotaDiarioPDF(data) {
 
     content: [
       filaDato("NOMBRE:", data.nombre),
-      lineaPuntos(475), 
+      lineaPuntos(475),
 
       filaDato(
         "FALLECIO:",
@@ -133,20 +130,20 @@ async function generarNotaDiarioPDF(data) {
       lineaPuntos(475),
       filaDato("NIETOS POLITICOS:", data.nietosPoliticos),
       lineaPuntos(475),
-     {
+      {
         stack: [
           { text: "SOBRINOS PRIMOS Y DEMAS DEUDOS:", bold: true, fontSize: 13 },
-          { 
-            text: (data.otros || "").toUpperCase(), 
+          {
+            text: (data.otros || "").toUpperCase(),
             margin: [0, 5, 0, 0],
-            fontSize: 13
-          }
+            fontSize: 13,
+          },
         ],
-        margin: [0, 7, 0, 0]
+        margin: [0, 7, 0, 0],
       },
 
       {
-        text: "OFICIO RELIGIOSO: " + data.oficioReligioso ,
+        text: "OFICIO RELIGIOSO: " + data.oficioReligioso,
         margin: [0, 40, 0, 5],
         fontSize: 13,
       },
