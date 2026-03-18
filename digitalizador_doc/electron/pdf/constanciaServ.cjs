@@ -18,16 +18,35 @@ const fonts = {
 
 const printer = new PdfPrinter(fonts);
 
-function fechaLarga(fecha) {
-  if (!fecha) return "....................";
-  const f = new Date(fecha);
-  return f.toLocaleDateString("es-AR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
+function formatearFecha(fecha) {
+  if (!fecha) return "";
 
+  const [year, month, day] = fecha.split("-");
+  return `${day}/${month}/${year}`;
+}
+function fechaLarga(fecha) {
+  if (!fecha) return "";
+
+  const meses = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
+
+  const [year, month, day] = fecha.split("-");
+  const diaLimpio = parseInt(day, 10);
+  const nombreMes = meses[parseInt(month, 10) - 1];
+  return `${diaLimpio} de ${nombreMes} de ${year}`;
+}
 async function generarConstanciaPDF(data) {
   const outputDir = path.join(downloadsDir(), "Constancias");
 
@@ -50,7 +69,7 @@ async function generarConstanciaPDF(data) {
     header: function (currentPage, pageCount) {
       return {
         image: headerImg,
-        width: 500, 
+        width: 500,
         alignment: "center",
         margin: [0, 30, 0, 0],
       };
@@ -59,7 +78,7 @@ async function generarConstanciaPDF(data) {
     footer: function (currentPage, pageCount) {
       return {
         image: footerImg,
-        width: 500, 
+        width: 500,
         alignment: "center",
         margin: [0, 0, 0, 20],
       };
@@ -75,13 +94,13 @@ async function generarConstanciaPDF(data) {
       {
         text: [
           { text: "Por medio de la presente dejamos constancia que el día " },
-          { text: fechaLarga(data.fechaFallecimiento), bold: true },
+          { text: formatearFecha(data.fechaFallecimiento), bold: true },
           { text: ", falleció en Porteña el Sr./a " },
           { text: (data.nombreFallecido || "").toUpperCase(), bold: true },
           {
             text: ", cuyos restos fueron velados en la sala de la Cooperativa de Servicios Públicos de Porteña Ltda. y recibieron sepultura el día ",
           },
-          { text: fechaLarga(data.fechaSepelio), bold: true },
+          { text: formatearFecha(data.fechaSepelio), bold: true },
           { text: ", bajo el mismo servicio.\n\n" },
         ],
         alignment: "justify",
@@ -104,7 +123,6 @@ async function generarConstanciaPDF(data) {
       {
         stack: [
           {
-
             canvas: [
               {
                 type: "line",
@@ -113,7 +131,7 @@ async function generarConstanciaPDF(data) {
                 x2: 200,
                 y2: 0,
                 lineWidth: 0.5,
-                dash: { length: 2, space: 2 }, 
+                dash: { length: 2, space: 2 },
               },
             ],
             alignment: "center",
@@ -125,7 +143,7 @@ async function generarConstanciaPDF(data) {
             fontSize: 12,
           },
         ],
-        margin: [0, 80, 0, 0], 
+        margin: [0, 80, 0, 0],
       },
     ],
   };

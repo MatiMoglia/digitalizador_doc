@@ -22,15 +22,36 @@ function downloadsDir() {
   );
 }
 
-function fechaLarga(fecha) {
-  if (!fecha) return "....................";
-  const f = new Date(fecha);
-  return f.toLocaleDateString("es-AR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+function formatearFechaSimple(fecha) {
+  if (!fecha) return "";
+
+  const [year, month, day] = fecha.split("-");
+  return `${day}/${month}/${year}`;
 }
+function fechaLarga(fecha) {
+  if (!fecha) return "";
+
+  const meses = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
+
+  const [year, month, day] = fecha.split("-");
+  const diaLimpio = parseInt(day, 10);
+  const nombreMes = meses[parseInt(month, 10) - 1];
+  return `${diaLimpio} de ${nombreMes} de ${year}`;
+}
+
 
 function dataCell(text) {
   return {
@@ -202,7 +223,7 @@ async function generarSolicitudSepelio(data) {
           body: [
             [
               labelCell("Sepelio: Día:"),
-              dataCell(fechaLarga(data.fechaSepelio)),
+              dataCell(formatearFechaSimple(data.fechaSepelio)),
               labelCell("Hora:", "right"),
               dataCell(data.horaSepelio),
               labelCell("Cementerio:", "right"),
@@ -393,8 +414,8 @@ async function generarSolicitudSepelio(data) {
       },
       label: { fontSize: 11, bold: true },
       inputText: { fontSize: 12, bold: false },
-      listText: { fontSize: 11, margin: [0, 1, 0, 1], color: "#444444" },
-      legalText: { fontSize: 10, alignment: "justify", lineHeight: 1.3 },
+      listText: { fontSize: 12, margin: [0, 1, 0, 1], color: "#444444" },
+      legalText: { fontSize: 12, alignment: "justify", lineHeight: 1.3 },
       signatureText: {
         fontSize: 9,
         bold: true,

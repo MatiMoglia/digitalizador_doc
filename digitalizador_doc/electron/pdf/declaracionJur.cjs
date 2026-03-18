@@ -23,16 +23,45 @@ function downloadsDir() {
 }
 
 function formatearFechaSimple(fecha) {
-  if (!fecha || !fecha.includes("-")) return "../../....";
-  const [anio, mes, dia] = fecha.split("-");
-  return `${dia}/${mes}/${anio}`;
+  if (!fecha) return "";
+
+  const [year, month, day] = fecha.split("-");
+  return `${day}/${month}/${year}`;
+}
+function fechaLarga(fecha) {
+  if (!fecha) return "";
+
+  const meses = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre",
+  ];
+
+  const [year, month, day] = fecha.split("-");
+  const diaLimpio = parseInt(day, 10);
+  const nombreMes = meses[parseInt(month, 10) - 1];
+  return `${diaLimpio} de ${nombreMes} de ${year}`;
 }
 
 function filaPuntos(label, value, widthLabel = "auto") {
   return {
-    margin: [0, 8, 0, 0],
+    margin: [0, 5, 0, 0],
     columns: [
-      { text: label, style: "label", width: widthLabel },
+      {
+        text: label,
+        style: "label",
+        width: widthLabel,
+        bold: false,
+      },
       {
         stack: [
           {
@@ -68,7 +97,7 @@ async function generarDeclaracion(data) {
 
   const docDefinition = {
     pageSize: "A4",
-    pageMargins: [50, 40, 50, 40],
+    pageMargins: [60, 30, 45, 30],
     defaultStyle: { font: "Times", fontSize: 10, lineHeight: 1.2 },
     content: [
       {
@@ -78,7 +107,7 @@ async function generarDeclaracion(data) {
               {
                 text: "Pedro Bonzi 541 - Tacural (Santa Fe)",
                 bold: true,
-                fontSize: 8,
+                fontSize: 7,
               },
               { text: "Tel.: (03493) 492156 - 492205", fontSize: 8 },
               { text: "e-mail: airesdepazcc@yahoo.com.ar", fontSize: 8 },
@@ -91,7 +120,7 @@ async function generarDeclaracion(data) {
                 text: "Aires de Paz",
                 font: "Times",
                 italics: true,
-                fontSize: 22,
+                fontSize: 20,
                 alignment: "right",
               },
               {
@@ -120,14 +149,14 @@ async function generarDeclaracion(data) {
       {
         text: "Declaración Jurada: Solicitud de Autorización",
         style: "title",
-        fontSize: 14,
-        margin: [0, 10, 0, 10],
+        fontSize: 15,
+        margin: [0, 5, 0, 5],
       },
       {
         text: [
           { text: "Tacural ", bold: true },
           {
-            text: formatearFechaSimple(data.fechaDocumento),
+            text: fechaLarga(data.fechaDocumento),
             style: "inputText",
           },
         ],
@@ -287,6 +316,7 @@ async function generarDeclaracion(data) {
         text: "El / la Solicitante declara bajo juramento:",
         bold: true,
         margin: [0, 10, 0, 5],
+        fontSize: 10,
       },
       {
         columns: [
@@ -294,6 +324,7 @@ async function generarDeclaracion(data) {
           {
             text: "Que sabe y le consta que el fallecido murió de causas naturales y que no existió intervención judicial o policial.",
             width: "*",
+            fontSize: 11,
           },
         ],
       },
@@ -304,6 +335,7 @@ async function generarDeclaracion(data) {
           {
             text: "Que es el familiar mas directo del fallecido con la facultad para solicitar la cremación, no existiendo oposición a tal solicitud por ninguna persona con mejor derecho.",
             width: "*",
+            fontSize: 11,
           },
         ],
       },
@@ -314,11 +346,13 @@ async function generarDeclaracion(data) {
           {
             text: "Que asume cualquier consecuencia legal relacionada con los reclamos familiares derivados de la cremación que solicita desligando expresamente a Aires de la Paz Complejo Crematorio de toda responsabilidad sobre el particular.",
             width: "*",
+            fontSize: 11,
           },
         ],
       },
       {
         text: "El solicitante exhibe los siguientes documentos:",
+        fontSize: 11,
       },
 
       {
@@ -335,7 +369,7 @@ async function generarDeclaracion(data) {
             width: "*",
           },
         ],
-        margin: [0, 8, 0, 40],
+        margin: [0, 3, 0, 50],
       },
 
       {
@@ -360,7 +394,7 @@ async function generarDeclaracion(data) {
                 text: "Firma",
                 alignment: "center",
                 fontSize: 8,
-                margin: [0, 4, 0, 40],
+                margin: [0, 4, 0, 50],
               },
               {
                 canvas: [
@@ -380,7 +414,7 @@ async function generarDeclaracion(data) {
                 text: "Firma (Testigo I)",
                 alignment: "center",
                 fontSize: 8,
-                margin: [0, 4, 0, 40],
+                margin: [0, 4, 0, 50],
               },
               {
                 canvas: [
@@ -424,7 +458,7 @@ async function generarDeclaracion(data) {
                 text: "Aclaración manuscrita",
                 alignment: "center",
                 fontSize: 8,
-                margin: [0, 4, 0, 40],
+                margin: [0, 4, 0, 50],
               },
               {
                 canvas: [
@@ -444,7 +478,7 @@ async function generarDeclaracion(data) {
                 text: "Aclaración manuscrita",
                 alignment: "center",
                 fontSize: 8,
-                margin: [0, 4, 0, 40],
+                margin: [0, 4, 0, 50],
               },
               {
                 canvas: [
@@ -496,9 +530,9 @@ async function generarDeclaracion(data) {
       },
       {
         text: "OBSERVACIONES: DECLARO FEHACIENTEMENTE QUE EL FALLECIDO NO POSEE MARCA PASO NI PROTESIS SILICONADAS.",
-        bold: true,
         fontSize: 8,
-        margin: [0, 10, 0, 25],
+        characterSpacing: 1.2,
+        margin: [0, 10, 0, 32],
       },
       {
         columns: [
@@ -513,12 +547,16 @@ async function generarDeclaracion(data) {
                     x2: 160,
                     y2: 0,
                     lineWidth: 0.5,
-                    lineColor: "#aaaaaa",
+                    lineColor: "#000000",
                     dash: { length: 1, space: 1 },
                   },
                 ],
               },
-              { text: "FIRMA Y ACLARACION", fontSize: 7, margin: [0, 5, 0, 5] },
+              {
+                text: "FIRMA Y ACLARACION",
+                fontSize: 10,
+                margin: [0, 5, 0, 5],
+              },
             ],
             width: "auto",
           },
@@ -533,7 +571,7 @@ async function generarDeclaracion(data) {
                     x2: 130,
                     y2: 0,
                     lineWidth: 0.5,
-                    lineColor: "#aaaaaa",
+                    lineColor: "#000000",
                     dash: { length: 1, space: 1 },
                   },
                 ],
@@ -545,18 +583,18 @@ async function generarDeclaracion(data) {
       },
       {
         text: `Destino de las Cenizas: ${".".repeat(80)}`,
-        margin: [0, 3, 0, 2],
-        fontSize: 8,
+        margin: [0, 3, 0, 5],
+        fontSize: 9,
       },
       {
         text: `Retiro las Cenizas correspondientes el: ${".".repeat(60)}`,
         margin: [0, 2, 0, 0],
-        fontSize: 8,
+        fontSize: 9,
       },
     ],
     styles: {
       title: { bold: true, decoration: "underline" },
-      label: { bold: true },
+      label: { bold: false },
       inputText: { fontSize: 11, bold: true },
     },
   };
